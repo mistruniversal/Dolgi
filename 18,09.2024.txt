@@ -1,0 +1,61 @@
+ЗАПРОСЫ В БДШКЕ
+1
+SELECT 
+    c.company_name AS company_name,
+    e.first_name || ' ' || e.last_name AS employee_full_name
+FROM 
+    customers c
+JOIN 
+    orders o ON c.customer_id = o.customer_id
+JOIN 
+    employees e ON o.employee_id = e.employee_id
+WHERE 
+    c.city = 'London' 
+    AND e.city = 'London'
+    AND o.ship_via = (SELECT shipper_id FROM shippers WHERE company_name = 'Speedy Express');
+
+
+
+
+2
+SELECT 
+    p.product_name AS product_name,
+    p.units_in_stock AS units_in_stock,
+    s.contact_name AS supplier_contact,
+    s.phone AS supplier_phone
+FROM 
+    products p
+JOIN 
+    suppliers s ON p.supplier_id = s.supplier_id
+WHERE 
+    p.discontinued = FALSE 
+    AND p.category_id IN (SELECT category_id FROM categories WHERE category_name IN ('Beverages', 'Seafood'))
+    AND p.units_in_stock < 20;
+
+
+
+3
+SELECT 
+    c.customer_name AS customer_name,
+    NULL AS order_id
+FROM 
+    customers c
+LEFT JOIN 
+    orders o ON c.customer_id = o.customer_id
+WHERE 
+    o.order_id IS NULL;
+
+
+
+
+4
+SELECT 
+    c.customer_name AS customer_name,
+    o.order_id AS order_id
+FROM 
+    customers c
+RIGHT JOIN 
+    orders o ON c.customer_id = o.customer_id
+WHERE 
+    c.customer_id IS NULL;
+
